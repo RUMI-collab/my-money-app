@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Money Cute Pro 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-soft: #fdf6f0;
+            --primary-pink: #ffb7b7;
+            --primary-blue: #a0c4ff;
+            --primary-green: #b9fbc0;
+            --text-dark: #5d5d5d;
+            --white: #ffffff;
+            --danger: #ff8b8b;
+        }
+
+        /* Prevent overscroll on mobile */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg-soft);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            color: var(--text-dark);
+            overscroll-behavior-y: contain;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 414px;
+            background: var(--white);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-view { display: none; flex: 1; overflow-y: auto; padding-bottom: 100px; }
+        .page-view.active { display: block; }
+
+        /* Header */
+        .header { padding: 30px 20px 10px; text-align: center; }
+        .month-selector {
+            font-weight: 700; font-size: 1.2rem; margin-bottom: 15px;
+            display: flex; justify-content: center; align-items: center; gap: 20px;
+        }
+        .nav-arrow { 
+            cursor: pointer; 
+            padding: 10px 18px; 
+            background: #fff; 
+            border: 1px solid #eee;
+            border-radius: 50%; 
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .summary-banner {
+            display: flex; justify-content: space-around;
+            background: #fff9f4; padding: 15px; border-radius: 20px; margin: 10px 0;
+        }
+        .summary-item small { font-size: 0.7rem; color: #aaa; display: block; }
+        .summary-item span { font-weight: 700; font-size: 1rem; }
+
+        /* Input */
+        .input-panel { padding: 20px; border-top: 2px dashed #eee; }
+        .tab-switcher { display: flex; background: #f0f0f0; border-radius: 25px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 12px; border: none; background: none; font-family: inherit; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .tab.active { background: var(--primary-pink); color: white; border-radius: 25px; }
+        .tab.active.income-mode { background: var(--primary-blue); }
+
+        .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .cat-icon { width: 50px; height: 50px; border-radius: 50%; background: #f8f8f8; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 5px; border: 2px solid transparent; }
+        .cat-item.selected .cat-icon { border-color: var(--primary-pink); background: #fff0f0; transform: scale(1.1); transition: 0.2s; }
+
+        .amount-input { width: 100%; border: none; border-bottom: 2px solid #eee; font-size: 1.8rem; text-align: center; padding: 15px; outline: none; margin-bottom: 20px; font-family: inherit; color: var(--text-dark); }
+        .btn-save { background: var(--primary-pink); color: white; border: none; width: 100%; padding: 18px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+
+        /* History */
+        .history-section { padding: 0 20px; }
+        .trx-row { display: flex; align-items: center; margin-bottom: 12px; padding: 12px; background: #fafafa; border-radius: 18px; position: relative; }
+        .trx-icon-small { width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+        .trx-title { flex: 1; font-weight: 600; font-size: 0.9rem; }
+        .trx-val { font-weight: 700; font-size: 0.95rem; margin-right: 10px; }
+        .btn-del { color: #ccc; border: none; background: none; font-size: 1.2rem; cursor: pointer; padding: 5px; }
+
+        /* Navbar */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; max-width: 414px;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around;
+            padding: 15px 0 25px; border-top: 1px solid #eee; z-index: 100;
+        }
+        .nav-item { cursor: pointer; font-size: 1.5rem; opacity: 0.3; text-align: center; -webkit-tap-highlight-color: transparent; }
+        .nav-item span { display: block; font-size: 0.65rem; font-weight: 700; margin-top: 4px; }
+        .nav-item.active { opacity: 1; color: var(--primary-pink); }
+
+        .budget-warning { background: #fff0f0; border: 1px solid var(--danger); padding: 12px; border-radius: 15px; margin: 0 20px 15px; font-size: 0.8rem; color: var(--danger); display: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div id="page-home" class="page-view active">
+        <div class="header">
+            <div class="month-selector">
+                <span class="nav-arrow" onclick="changeMonth(-1)">‹</span>
+                <span id="currentMonthDisplay">Maret 2026</span>
+                <span class="nav-arrow" onclick="changeMonth(1)">›</span>
+            </div>
+            <div class="summary-banner">
+                <div class="summary-item"><small>Masuk</small><span id="stat-inc" style="color:var(--primary-blue)">0</span></div>
+                <div class="summary-item"><small>Keluar</small><span id="stat-exp" style="color:var(--primary-pink)">0</span></div>
+                <div class="summary-item"><small>Saldo</small><span id="stat-total">0</span></div>
+            </div>
+        </div>
+
+        <div id="budgetAlert" class="budget-warning">⚠️ Anggaran <b><span id="warn-cat"></span></b> sudah limit!</div>
+
+        <div class="input-panel">
+            <div class="tab-switcher">
+                <button class="tab active" id="tabExp" onclick="setMode('expense')">Pengeluaran</button>
+                <button class="tab" id="tabInc" onclick="setMode('income')">Pemasukan</button>
+            </div>
+            <div class="category-grid" id="catGrid"></div>
+            <input type="number" id="amount" class="amount-input" placeholder="0" inputmode="numeric">
+            <button class="btn-save" onclick="saveTransaction()">Simpan ✨</button>
+        </div>
+        
+        <div class="history-section" id="historyList"></div>
+    </div>
+
+    <div id="page-stats" class="page-view">
+        <div class="header"><h3>Laporan Keuangan</h3></div>
+        <div style="padding: 10px;">
+            <div style="background: white; padding: 20px; border-radius: 25px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                <canvas id="pieChart"></canvas>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-budget" class="page-view">
+        <div class="header"><h3>Set Anggaran</h3></div>
+        <div id="budgetSettingsList" style="padding: 10px;"></div>
+        <div style="padding: 20px;"><button onclick="saveBudgets()" class="btn-save" style="background: var(--primary-blue);">Update Anggaran ✅</button></div>
+    </div>
+
+    <div id="page-profile" class="page-view">
+        <div class="header"><h3>Pengaturan</h3></div>
+        <div style="padding:30px; text-align:center;">
+            <p>Aplikasi ini menyimpan data secara lokal di HP Anda.</p>
+            <button onclick="clearAllData()" style="color:var(--danger); border:1.5px solid var(--danger); background:none; padding:12px 25px; border-radius:15px; font-weight:700; cursor:pointer">Reset Semua Data</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('home', this)">🏠<span>Home</span></div>
+        <div class="nav-item" onclick="switchPage('stats', this)">📊<span>Stats</span></div>
+        <div class="nav-item" onclick="switchPage('budget', this)">⚙️<span>Budget</span></div>
+        <div class="nav-item" onclick="switchPage('profile', this)">👤<span>Me</span></div>
+    </div>
+</div>
+
+<script>
+    let currentMode = 'expense';
+    let selectedCategory = '';
+    let transactions = JSON.parse(localStorage.getItem('cuteMoneyPro')) || [];
+    let budgets = JSON.parse(localStorage.getItem('cuteBudgets')) || {}; 
+    let charts = { pie: null, bar: null };
+    let dateContext = new Date(2026, 2, 1); 
+
+    const cats = {
+        expense: [
+            {n:'Makan',i:'🍔'}, {n:'Belanja',i:'🛍️'}, {n:'Kopi',i:'☕'}, 
+            {n:'Transport',i:'🚗'}, {n:'Rumah',i:'🏠'}, {n:'PDAM',i:'💧'}, 
+            {n:'LISTRIK',i:'⚡'}, {n:'BPL',i:'🏘️'}, {n:'KENDARAAN',i:'🏍️'}, 
+            {n:'KESEHATAN',i:'🏥'}, {n:'Lainnya',i:'✨'}
+        ],
+        income: [{n:'Gaji',i:'💰'}, {n:'Bonus',i:'🧧'}, {n:'Jual',i:'📦'}]
+    };
+
+    function changeMonth(dir) {
+        dateContext.setMonth(dateContext.getMonth() + dir);
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        document.getElementById('currentMonthDisplay').innerText = monthNames[dateContext.getMonth()] + " " + dateContext.getFullYear();
+        renderAll();
+        if(document.getElementById('page-stats').classList.contains('active')) updateCharts();
+    }
+
+    function switchPage(pageId, element) {
+        document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + pageId).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        element.classList.add('active');
+        if(pageId === 'stats') updateCharts();
+        if(pageId === 'budget') renderBudgetSettings();
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        selectedCategory = '';
+        document.getElementById('tabExp').classList.toggle('active', mode === 'expense');
+        document.getElementById('tabInc').classList.toggle('active', mode === 'income');
+        document.getElementById('tabInc').classList.toggle('income-mode', mode === 'income');
+        renderCategories();
+    }
+
+    function renderCategories() {
+        const grid = document.getElementById('catGrid');
+        grid.innerHTML = '';
+        cats[currentMode].forEach(c => {
+            const div = document.createElement('div');
+            div.className = `cat-item ${selectedCategory === c.n ? 'selected' : ''}`;
+            div.onclick = () => { selectedCategory = c.n; renderCategories(); checkBudget(c.n); };
+            div.innerHTML = `<div class="cat-icon">${c.i}</div><small style="font-size:0.65rem; font-weight:700">${c.n}</small>`;
+            grid.appendChild(div);
+        });
+    }
+
+    function checkBudget(catName) {
+        const alertBox = document.getElementById('budgetAlert');
+        if(currentMode === 'income' || !budgets[catName]) { alertBox.style.display = 'none'; return; }
+        const spent = transactions.filter(t => t.category === catName && t.month === dateContext.getMonth() && t.year === dateContext.getFullYear()).reduce((sum, t) => sum + t.amount, 0);
+        if(spent > budgets[catName]) { alertBox.style.display = 'block'; document.getElementById('warn-cat').innerText = catName; } 
+        else { alertBox.style.display = 'none'; }
+    }
+
+    function saveTransaction() {
+        const amt = document.getElementById('amount').value;
+        if(!amt || !selectedCategory) return alert('Pilih kategori & nominal! ✨');
+        transactions.push({
+            id: Date.now(),
+            mode: currentMode,
+            category: selectedCategory,
+            icon: cats[currentMode].find(c => c.n === selectedCategory).i,
+            amount: parseFloat(amt),
+            month: dateContext.getMonth(),
+            year: dateContext.getFullYear(),
+            date: new Date().toLocaleDateString('id-ID', {day:'numeric', month:'short'})
+        });
+        localStorage.setItem('cuteMoneyPro', JSON.stringify(transactions));
+        document.getElementById('amount').value = '';
+        renderAll();
+        checkBudget(selectedCategory);
+    }
+
+    function deleteTrx(id) {
+        if(confirm('Hapus transaksi ini?')) {
+            transactions = transactions.filter(t => t.id !== id);
+            localStorage.setItem('cuteMoneyPro', JSON.stringify(transactions));
+            renderAll();
+        }
+    }
+
+    function renderAll() {
+        const list = document.getElementById('historyList');
+        list.innerHTML = '<h4>Aktivitas</h4>';
+        const filtered = transactions.filter(t => t.month === dateContext.getMonth() && t.year === dateContext.getFullYear());
+        let inc = 0, exp = 0;
+        filtered.slice().reverse().forEach(t => {
+            if(t.mode === 'income') inc += t.amount; else exp += t.amount;
+            const div = document.createElement('div');
+            div.className = 'trx-row';
+            div.innerHTML = `
+                <div class="trx-icon-small">${t.icon}</div>
+                <div class="trx-title">${t.category}<br><small style="color:#bbb">${t.date}</small></div>
+                <div class="trx-val ${t.mode==='income'?'val-income':'val-expense'}">
+                    ${t.mode==='income'?'+':'-'}${t.amount.toLocaleString('id-ID')}
+                </div>
+                <button class="btn-del" onclick="deleteTrx(${t.id})">×</button>`;
+            list.appendChild(div);
+        });
+        document.getElementById('stat-inc').innerText = inc.toLocaleString('id-ID');
+        document.getElementById('stat-exp').innerText = exp.toLocaleString('id-ID');
+        document.getElementById('stat-total').innerText = (inc - exp).toLocaleString('id-ID');
+    }
+
+    function renderBudgetSettings() {
+        const container = document.getElementById('budgetSettingsList');
+        container.innerHTML = '';
+        cats.expense.forEach(c => {
+            container.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #eee">
+                    <span>${c.i} ${c.n}</span>
+                    <input type="number" class="budget-input" style="width:100px; padding:8px; border-radius:10px; border:1px solid #ddd; text-align:right" data-cat="${c.n}" value="${budgets[c.n] || 0}">
+                </div>`;
+        });
+    }
+
+    function saveBudgets() {
+        document.querySelectorAll('.budget-input').forEach(input => { budgets[input.dataset.cat] = parseFloat(input.value) || 0; });
+        localStorage.setItem('cuteBudgets', JSON.stringify(budgets));
+        alert('Anggaran diupdate! ✅');
+        switchPage('home', document.querySelector('.nav-item'));
+    }
+
+    function updateCharts() {
+        const filtered = transactions.filter(t => t.month === dateContext.getMonth() && t.year === dateContext.getFullYear());
+        const pieData = {}; let totalInc = 0, totalExp = 0;
+        filtered.forEach(t => {
+            if(t.mode === 'expense') pieData[t.category] = (pieData[t.category] || 0) + t.amount;
+            if(t.mode === 'income') totalInc += t.amount; else totalExp += t.amount;
+        });
+        if(charts.pie) charts.pie.destroy();
+        charts.pie = new Chart(document.getElementById('pieChart'), {
+            type: 'doughnut',
+            data: { labels: Object.keys(pieData), datasets: [{ data: Object.values(pieData), backgroundColor: ['#ffb7b7', '#a0c4ff', '#b9fbc0', '#fec89a', '#818cf8', '#f472b6', '#34d399'] }] },
+            options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Quicksand' } } } } }
+        });
+        if(charts.bar) charts.bar.destroy();
+        charts.bar = new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: { labels: ['Masuk', 'Keluar'], datasets: [{ data: [totalInc, totalExp], backgroundColor: ['#a0c4ff', '#ffb7b7'], borderRadius: 10 }] },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    function clearAllData() { if(confirm('Hapus semua data?')) { localStorage.clear(); location.reload(); } }
+
+    setMode('expense');
+    updateDisplay();
+</script>
+</body>
+</html>
