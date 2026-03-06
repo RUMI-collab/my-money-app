@@ -15,9 +15,10 @@
             --text-dark: #5d5d5d;
             --white: #ffffff;
             --danger: #ff8b8b;
+            --gold: #ffcc00;
+            --edit-blue: #7db9f2;
         }
 
-        /* Prevent overscroll on mobile */
         body {
             font-family: 'Quicksand', sans-serif;
             background-color: var(--bg-soft);
@@ -42,64 +43,64 @@
         .page-view { display: none; flex: 1; overflow-y: auto; padding-bottom: 100px; }
         .page-view.active { display: block; }
 
-        /* Header */
         .header { padding: 30px 20px 10px; text-align: center; }
         .month-selector {
             font-weight: 700; font-size: 1.2rem; margin-bottom: 15px;
             display: flex; justify-content: center; align-items: center; gap: 20px;
         }
-        .nav-arrow { 
-            cursor: pointer; 
-            padding: 10px 18px; 
-            background: #fff; 
-            border: 1px solid #eee;
-            border-radius: 50%; 
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .nav-arrow { cursor: pointer; padding: 10px 18px; background: #fff; border: 1px solid #eee; border-radius: 50%; user-select: none; }
 
+        .summary-wrapper { margin: 10px 20px; }
         .summary-banner {
             display: flex; justify-content: space-around;
-            background: #fff9f4; padding: 15px; border-radius: 20px; margin: 10px 0;
+            background: #fff9f4; padding: 15px; border-radius: 20px; margin-bottom: 10px;
+        }
+        .asset-banner {
+            background: #f0f7ff; padding: 15px; border-radius: 20px; text-align: center;
+            border: 1px dashed var(--primary-blue);
         }
         .summary-item small { font-size: 0.7rem; color: #aaa; display: block; }
-        .summary-item span { font-weight: 700; font-size: 1rem; }
+        .summary-item span { font-weight: 700; font-size: 0.9rem; }
+        .asset-banner small { font-size: 0.7rem; color: #7a9cc6; display: block; }
+        .asset-banner span { font-weight: 800; font-size: 1.1rem; color: #4a90e2; }
 
-        /* Input */
-        .input-panel { padding: 20px; border-top: 2px dashed #eee; }
+        .input-panel { padding: 20px; border-top: 2px dashed #eee; background: #fff; position: sticky; top: 0; z-index: 10; }
         .tab-switcher { display: flex; background: #f0f0f0; border-radius: 25px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 12px; border: none; background: none; font-family: inherit; font-weight: 700; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .tab.active { background: var(--primary-pink); color: white; border-radius: 25px; }
-        .tab.active.income-mode { background: var(--primary-blue); }
+        .tab { flex: 1; padding: 12px; border: none; background: none; font-family: inherit; font-weight: 700; cursor: pointer; }
+        .tab.active { border-radius: 25px; color: white; }
+        .tab.active.exp { background: var(--primary-pink); }
+        .tab.active.inc { background: var(--primary-blue); }
 
         .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-        .cat-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .cat-icon { width: 50px; height: 50px; border-radius: 50%; background: #f8f8f8; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 5px; border: 2px solid transparent; }
-        .cat-item.selected .cat-icon { border-color: var(--primary-pink); background: #fff0f0; transform: scale(1.1); transition: 0.2s; }
+        .cat-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; opacity: 0.5; }
+        .cat-item.selected { opacity: 1; transform: scale(1.1); transition: 0.2s; }
+        .cat-icon { width: 45px; height: 45px; border-radius: 50%; background: #f8f8f8; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 5px; border: 2px solid transparent; }
+        .cat-item.selected .cat-icon { border: 2px solid var(--text-dark); background: white; }
 
-        .amount-input { width: 100%; border: none; border-bottom: 2px solid #eee; font-size: 1.8rem; text-align: center; padding: 15px; outline: none; margin-bottom: 20px; font-family: inherit; color: var(--text-dark); }
-        .btn-save { background: var(--primary-pink); color: white; border: none; width: 100%; padding: 18px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #goldInputGroup { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .sub-input { border: 1px solid #eee; border-radius: 10px; padding: 12px; font-family: inherit; text-align: center; outline: none; background: #fafafa; }
 
-        /* History */
+        .amount-input { width: 100%; border: none; border-bottom: 2px solid #eee; font-size: 1.8rem; text-align: center; padding: 15px; outline: none; margin-bottom: 20px; font-family: inherit; box-sizing: border-box; }
+        .btn-save { color: white; border: none; width: 100%; padding: 18px; border-radius: 30px; font-weight: 700; cursor: pointer; font-size: 1rem; transition: 0.3s; margin-bottom: 5px; }
+        .btn-cancel { background: #eee; color: #888; border: none; width: 100%; padding: 10px; border-radius: 20px; font-weight: 600; cursor: pointer; display: none; }
+
         .history-section { padding: 0 20px; }
-        .trx-row { display: flex; align-items: center; margin-bottom: 12px; padding: 12px; background: #fafafa; border-radius: 18px; position: relative; }
-        .trx-icon-small { width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
-        .trx-title { flex: 1; font-weight: 600; font-size: 0.9rem; }
-        .trx-val { font-weight: 700; font-size: 0.95rem; margin-right: 10px; }
-        .btn-del { color: #ccc; border: none; background: none; font-size: 1.2rem; cursor: pointer; padding: 5px; }
+        .trx-row { display: flex; align-items: center; margin-bottom: 12px; padding: 12px; background: #fafafa; border-radius: 18px; }
+        .trx-icon-small { width: 40px; height: 40px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 1.2rem; }
+        .trx-title { flex: 1; font-weight: 600; font-size: 0.85rem; }
+        .trx-val { font-weight: 700; font-size: 0.9rem; text-align: right; }
+        .val-expense { color: var(--danger); }
+        .val-income { color: #4a90e2; }
+        .val-asset { color: var(--gold); }
+        
+        .action-btns { display: flex; gap: 8px; margin-left: 10px; }
+        .btn-action { border: none; background: none; font-size: 1.1rem; cursor: pointer; padding: 5px; opacity: 0.4; }
+        .btn-action:hover { opacity: 1; }
 
-        /* Navbar */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; max-width: 414px;
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-            display: flex; justify-content: space-around;
-            padding: 15px 0 25px; border-top: 1px solid #eee; z-index: 100;
-        }
-        .nav-item { cursor: pointer; font-size: 1.5rem; opacity: 0.3; text-align: center; -webkit-tap-highlight-color: transparent; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 414px; background: white; display: flex; justify-content: space-around; padding: 15px 0 25px; border-top: 1px solid #eee; z-index: 100; }
+        .nav-item { cursor: pointer; font-size: 1.5rem; opacity: 0.3; text-align: center; }
         .nav-item span { display: block; font-size: 0.65rem; font-weight: 700; margin-top: 4px; }
         .nav-item.active { opacity: 1; color: var(--primary-pink); }
-
-        .budget-warning { background: #fff0f0; border: 1px solid var(--danger); padding: 12px; border-radius: 15px; margin: 0 20px 15px; font-size: 0.8rem; color: var(--danger); display: none; text-align: center; }
     </style>
 </head>
 <body>
@@ -113,69 +114,72 @@
                 <span id="currentMonthDisplay">Maret 2026</span>
                 <span class="nav-arrow" onclick="changeMonth(1)">›</span>
             </div>
-            <div class="summary-banner">
-                <div class="summary-item"><small>Masuk</small><span id="stat-inc" style="color:var(--primary-blue)">0</span></div>
-                <div class="summary-item"><small>Keluar</small><span id="stat-exp" style="color:var(--primary-pink)">0</span></div>
-                <div class="summary-item"><small>Saldo</small><span id="stat-total">0</span></div>
+            <div class="summary-wrapper">
+                <div class="summary-banner">
+                    <div class="summary-item"><small>Masuk</small><span id="stat-inc" style="color:#4a90e2">0</span></div>
+                    <div class="summary-item"><small>Keluar</small><span id="stat-exp" style="color:var(--danger)">0</span></div>
+                    <div class="summary-item"><small>Saldo Kas</small><span id="stat-total">0</span></div>
+                </div>
+                <div class="asset-banner">
+                    <small>💎 TOTAL ASET (BRANKAS)</small>
+                    <span id="stat-asset">Rp 0</span>
+                </div>
             </div>
         </div>
 
-        <div id="budgetAlert" class="budget-warning">⚠️ Anggaran <b><span id="warn-cat"></span></b> sudah limit!</div>
-
-        <div class="input-panel">
+        <div class="input-panel" id="inputSection">
             <div class="tab-switcher">
-                <button class="tab active" id="tabExp" onclick="setMode('expense')">Pengeluaran</button>
-                <button class="tab" id="tabInc" onclick="setMode('income')">Pemasukan</button>
+                <button class="tab active exp" id="tabExp" onclick="setMode('expense')">Pengeluaran</button>
+                <button class="tab inc" id="tabInc" onclick="setMode('income')">Pemasukan / Aset</button>
             </div>
             <div class="category-grid" id="catGrid"></div>
-            <input type="number" id="amount" class="amount-input" placeholder="0" inputmode="numeric">
-            <button class="btn-save" onclick="saveTransaction()">Simpan ✨</button>
+
+            <div id="goldInputGroup">
+                <input type="number" id="goldGram" class="sub-input" placeholder="Gram (gr)" step="0.01">
+                <input type="number" id="goldPrice" class="sub-input" placeholder="Harga/gr (Rp)">
+            </div>
+
+            <input type="number" id="amount" class="amount-input" placeholder="Nominal Rp" inputmode="numeric">
+            <button class="btn-save" id="saveBtn" onclick="saveTransaction()">Simpan ✨</button>
+            <button class="btn-cancel" id="cancelBtn" onclick="cancelEdit()">Batal Edit</button>
         </div>
         
         <div class="history-section" id="historyList"></div>
     </div>
 
     <div id="page-stats" class="page-view">
-        <div class="header"><h3>Laporan Keuangan</h3></div>
-        <div style="padding: 10px;">
-            <div style="background: white; padding: 20px; border-radius: 25px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                <canvas id="pieChart"></canvas>
-            </div>
-            <div style="background: white; padding: 20px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                <canvas id="barChart"></canvas>
+        <div class="header"><h3>Laporan</h3></div>
+        <div style="padding: 15px;">
+            <div style="background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <small>Komposisi Aset (Rp)</small>
+                <canvas id="assetChart"></canvas>
             </div>
         </div>
     </div>
 
     <div id="page-budget" class="page-view">
         <div class="header"><h3>Set Anggaran</h3></div>
-        <div id="budgetSettingsList" style="padding: 10px;"></div>
-        <div style="padding: 20px;"><button onclick="saveBudgets()" class="btn-save" style="background: var(--primary-blue);">Update Anggaran ✅</button></div>
-    </div>
-
-    <div id="page-profile" class="page-view">
-        <div class="header"><h3>Pengaturan</h3></div>
-        <div style="padding:30px; text-align:center;">
-            <p>Aplikasi ini menyimpan data secara lokal di HP Anda.</p>
-            <button onclick="clearAllData()" style="color:var(--danger); border:1.5px solid var(--danger); background:none; padding:12px 25px; border-radius:15px; font-weight:700; cursor:pointer">Reset Semua Data</button>
-        </div>
+        <div id="budgetSettingsList"></div>
+        <div style="padding: 20px;"><button onclick="saveBudgets()" class="btn-save" style="background: var(--primary-blue);">Simpan ✅</button></div>
     </div>
 
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchPage('home', this)">🏠<span>Home</span></div>
         <div class="nav-item" onclick="switchPage('stats', this)">📊<span>Stats</span></div>
         <div class="nav-item" onclick="switchPage('budget', this)">⚙️<span>Budget</span></div>
-        <div class="nav-item" onclick="switchPage('profile', this)">👤<span>Me</span></div>
     </div>
 </div>
 
 <script>
     let currentMode = 'expense';
     let selectedCategory = '';
+    let editId = null; 
     let transactions = JSON.parse(localStorage.getItem('cuteMoneyPro')) || [];
     let budgets = JSON.parse(localStorage.getItem('cuteBudgets')) || {}; 
-    let charts = { pie: null, bar: null };
+    let assetChartObj = null;
     let dateContext = new Date(2026, 2, 1); 
+
+    const assetCategories = ['EMAS', 'CASH', 'PROPERTI'];
 
     const cats = {
         expense: [
@@ -184,7 +188,10 @@
             {n:'LISTRIK',i:'⚡'}, {n:'BPL',i:'🏘️'}, {n:'KENDARAAN',i:'🏍️'}, 
             {n:'KESEHATAN',i:'🏥'}, {n:'Lainnya',i:'✨'}
         ],
-        income: [{n:'Gaji',i:'💰'}, {n:'Bonus',i:'🧧'}, {n:'Jual',i:'📦'}]
+        income: [
+            {n:'Gaji',i:'💰'}, {n:'Bonus',i:'🧧'}, {n:'Jual',i:'📦'},
+            {n:'EMAS',i:'🪙'}, {n:'CASH',i:'💵'}, {n:'PROPERTI',i:'🏢'}
+        ]
     };
 
     function changeMonth(dir) {
@@ -193,10 +200,9 @@
     }
 
     function updateDisplay() {
-        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        document.getElementById('currentMonthDisplay').innerText = monthNames[dateContext.getMonth()] + " " + dateContext.getFullYear();
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        document.getElementById('currentMonthDisplay').innerText = months[dateContext.getMonth()] + " " + dateContext.getFullYear();
         renderAll();
-        if(document.getElementById('page-stats').classList.contains('active')) updateCharts();
     }
 
     function switchPage(pageId, element) {
@@ -204,17 +210,32 @@
         document.getElementById('page-' + pageId).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         element.classList.add('active');
-        if(pageId === 'stats') updateCharts();
+        if(pageId === 'stats') updateAssetChart();
         if(pageId === 'budget') renderBudgetSettings();
     }
 
     function setMode(mode) {
         currentMode = mode;
         selectedCategory = '';
+        editId = null;
         document.getElementById('tabExp').classList.toggle('active', mode === 'expense');
         document.getElementById('tabInc').classList.toggle('active', mode === 'income');
-        document.getElementById('tabInc').classList.toggle('income-mode', mode === 'income');
+        updateSaveButton();
+        document.getElementById('goldInputGroup').style.display = 'none';
+        document.getElementById('amount').style.display = 'block';
+        document.getElementById('cancelBtn').style.display = 'none';
         renderCategories();
+    }
+
+    function updateSaveButton() {
+        const btn = document.getElementById('saveBtn');
+        if (editId) {
+            btn.innerText = "Update Data 💾";
+            btn.style.background = "var(--edit-blue)";
+        } else {
+            btn.innerText = "Simpan ✨";
+            btn.style.background = currentMode === 'income' ? 'var(--primary-blue)' : 'var(--primary-pink)';
+        }
     }
 
     function renderCategories() {
@@ -223,41 +244,111 @@
         cats[currentMode].forEach(c => {
             const div = document.createElement('div');
             div.className = `cat-item ${selectedCategory === c.n ? 'selected' : ''}`;
-            div.onclick = () => { selectedCategory = c.n; renderCategories(); checkBudget(c.n); };
-            div.innerHTML = `<div class="cat-icon">${c.i}</div><small style="font-size:0.65rem; font-weight:700">${c.n}</small>`;
+            div.onclick = () => { 
+                selectedCategory = c.n; 
+                renderCategories();
+                toggleGoldInputs(c.n);
+            };
+            div.innerHTML = `<div class="cat-icon">${c.i}</div><small style="font-size:0.6rem; font-weight:700">${c.n}</small>`;
             grid.appendChild(div);
         });
     }
 
-    function checkBudget(catName) {
-        const alertBox = document.getElementById('budgetAlert');
-        if(currentMode === 'income' || !budgets[catName]) { alertBox.style.display = 'none'; return; }
-        const spent = transactions.filter(t => t.category === catName && t.month === dateContext.getMonth() && t.year === dateContext.getFullYear()).reduce((sum, t) => sum + t.amount, 0);
-        if(spent > budgets[catName]) { alertBox.style.display = 'block'; document.getElementById('warn-cat').innerText = catName; } 
-        else { alertBox.style.display = 'none'; }
+    function toggleGoldInputs(cat) {
+        if(cat === 'EMAS') {
+            document.getElementById('goldInputGroup').style.display = 'grid';
+            document.getElementById('amount').style.display = 'none';
+        } else {
+            document.getElementById('goldInputGroup').style.display = 'none';
+            document.getElementById('amount').style.display = 'block';
+        }
     }
 
     function saveTransaction() {
-        const amt = document.getElementById('amount').value;
-        if(!amt || !selectedCategory) return alert('Pilih kategori & nominal! ✨');
-        transactions.push({
-            id: Date.now(),
+        let finalAmount = 0;
+        let note = "";
+        let goldGr = null;
+        let goldPr = null;
+
+        if(selectedCategory === 'EMAS') {
+            goldGr = parseFloat(document.getElementById('goldGram').value);
+            goldPr = parseFloat(document.getElementById('goldPrice').value);
+            if(!goldGr || !goldPr) return alert('Isi gram dan harga emas! ✨');
+            finalAmount = goldGr * goldPr;
+            note = `${goldGr} gr @ Rp ${goldPr.toLocaleString('id-ID')}`;
+        } else {
+            finalAmount = parseFloat(document.getElementById('amount').value);
+            if(!finalAmount || !selectedCategory) return alert('Lengkapi data! ✨');
+        }
+        
+        const data = {
+            id: editId || Date.now(),
             mode: currentMode,
             category: selectedCategory,
+            isAsset: assetCategories.includes(selectedCategory),
             icon: cats[currentMode].find(c => c.n === selectedCategory).i,
-            amount: parseFloat(amt),
+            amount: finalAmount,
+            note: note,
+            goldGr: goldGr,
+            goldPr: goldPr,
             month: dateContext.getMonth(),
             year: dateContext.getFullYear(),
             date: new Date().toLocaleDateString('id-ID', {day:'numeric', month:'short'})
-        });
+        };
+
+        if (editId) {
+            const index = transactions.findIndex(t => t.id === editId);
+            transactions[index] = data;
+            editId = null;
+        } else {
+            transactions.push(data);
+        }
+        
         localStorage.setItem('cuteMoneyPro', JSON.stringify(transactions));
-        document.getElementById('amount').value = '';
+        resetInputs();
+        setMode(currentMode);
         renderAll();
-        checkBudget(selectedCategory);
+    }
+
+    function editTrx(id) {
+        const t = transactions.find(item => item.id === id);
+        if(!t) return;
+
+        editId = t.id;
+        currentMode = t.mode;
+        selectedCategory = t.category;
+
+        document.getElementById('tabExp').classList.toggle('active', currentMode === 'expense');
+        document.getElementById('tabInc').classList.toggle('active', currentMode === 'income');
+        
+        renderCategories();
+        toggleGoldInputs(t.category);
+
+        if(t.category === 'EMAS') {
+            document.getElementById('goldGram').value = t.goldGr;
+            document.getElementById('goldPrice').value = t.goldPr;
+        } else {
+            document.getElementById('amount').value = t.amount;
+        }
+
+        updateSaveButton();
+        document.getElementById('cancelBtn').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+        setMode(currentMode);
+        resetInputs();
+    }
+
+    function resetInputs() {
+        document.getElementById('amount').value = '';
+        document.getElementById('goldGram').value = '';
+        document.getElementById('goldPrice').value = '';
     }
 
     function deleteTrx(id) {
-        if(confirm('Hapus transaksi ini?')) {
+        if(confirm('Hapus transaksi?')) {
             transactions = transactions.filter(t => t.id !== id);
             localStorage.setItem('cuteMoneyPro', JSON.stringify(transactions));
             renderAll();
@@ -268,23 +359,47 @@
         const list = document.getElementById('historyList');
         list.innerHTML = '<h4>Aktivitas</h4>';
         const filtered = transactions.filter(t => t.month === dateContext.getMonth() && t.year === dateContext.getFullYear());
+        
         let inc = 0, exp = 0;
+        let assetTotal = transactions.filter(t => t.isAsset).reduce((sum, t) => sum + t.amount, 0);
+
         filtered.slice().reverse().forEach(t => {
-            if(t.mode === 'income') inc += t.amount; else exp += t.amount;
+            if(!t.isAsset) {
+                if(t.mode === 'income') inc += t.amount; else exp += t.amount;
+            }
             const div = document.createElement('div');
             div.className = 'trx-row';
+            let colorClass = t.isAsset ? 'val-asset' : (t.mode==='income' ? 'val-income' : 'val-expense');
             div.innerHTML = `
                 <div class="trx-icon-small">${t.icon}</div>
-                <div class="trx-title">${t.category}<br><small style="color:#bbb">${t.date}</small></div>
-                <div class="trx-val ${t.mode==='income'?'val-income':'val-expense'}">
+                <div class="trx-title">${t.category}<br>
+                <small style="color:#bbb">${t.date} ${t.note ? '• '+t.note : ''}</small></div>
+                <div class="trx-val ${colorClass}">
                     ${t.mode==='income'?'+':'-'}${t.amount.toLocaleString('id-ID')}
                 </div>
-                <button class="btn-del" onclick="deleteTrx(${t.id})">×</button>`;
+                <div class="action-btns">
+                    <button class="btn-action" onclick="editTrx(${t.id})">✎</button>
+                    <button class="btn-action" onclick="deleteTrx(${t.id})" style="color:var(--danger)">×</button>
+                </div>`;
             list.appendChild(div);
         });
+
         document.getElementById('stat-inc').innerText = inc.toLocaleString('id-ID');
         document.getElementById('stat-exp').innerText = exp.toLocaleString('id-ID');
         document.getElementById('stat-total').innerText = (inc - exp).toLocaleString('id-ID');
+        document.getElementById('stat-asset').innerText = "Rp " + assetTotal.toLocaleString('id-ID');
+    }
+
+    function updateAssetChart() {
+        const assetData = { 'EMAS': 0, 'CASH': 0, 'PROPERTI': 0 };
+        transactions.filter(t => t.isAsset).forEach(t => { assetData[t.category] += t.amount; });
+
+        if(assetChartObj) assetChartObj.destroy();
+        assetChartObj = new Chart(document.getElementById('assetChart'), {
+            type: 'doughnut',
+            data: { labels: Object.keys(assetData), datasets: [{ data: Object.values(assetData), backgroundColor: ['#ffcc00', '#a0c4ff', '#b9fbc0'] }] },
+            options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+        });
     }
 
     function renderBudgetSettings() {
@@ -302,32 +417,9 @@
     function saveBudgets() {
         document.querySelectorAll('.budget-input').forEach(input => { budgets[input.dataset.cat] = parseFloat(input.value) || 0; });
         localStorage.setItem('cuteBudgets', JSON.stringify(budgets));
-        alert('Anggaran diupdate! ✅');
+        alert('Disimpan! ✅');
         switchPage('home', document.querySelector('.nav-item'));
     }
-
-    function updateCharts() {
-        const filtered = transactions.filter(t => t.month === dateContext.getMonth() && t.year === dateContext.getFullYear());
-        const pieData = {}; let totalInc = 0, totalExp = 0;
-        filtered.forEach(t => {
-            if(t.mode === 'expense') pieData[t.category] = (pieData[t.category] || 0) + t.amount;
-            if(t.mode === 'income') totalInc += t.amount; else totalExp += t.amount;
-        });
-        if(charts.pie) charts.pie.destroy();
-        charts.pie = new Chart(document.getElementById('pieChart'), {
-            type: 'doughnut',
-            data: { labels: Object.keys(pieData), datasets: [{ data: Object.values(pieData), backgroundColor: ['#ffb7b7', '#a0c4ff', '#b9fbc0', '#fec89a', '#818cf8', '#f472b6', '#34d399'] }] },
-            options: { cutout: '65%', plugins: { legend: { position: 'bottom', labels: { font: { family: 'Quicksand' } } } } }
-        });
-        if(charts.bar) charts.bar.destroy();
-        charts.bar = new Chart(document.getElementById('barChart'), {
-            type: 'bar',
-            data: { labels: ['Masuk', 'Keluar'], datasets: [{ data: [totalInc, totalExp], backgroundColor: ['#a0c4ff', '#ffb7b7'], borderRadius: 10 }] },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-        });
-    }
-
-    function clearAllData() { if(confirm('Hapus semua data?')) { localStorage.clear(); location.reload(); } }
 
     setMode('expense');
     updateDisplay();
